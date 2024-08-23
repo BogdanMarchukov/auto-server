@@ -1,4 +1,3 @@
-
 export default function Logger(contextName: string) {
   return function (
     target: any,
@@ -7,12 +6,12 @@ export default function Logger(contextName: string) {
   ) {
     const originalMethod = descriptor.value;
 
-    descriptor.value = function (...args: any[]) {
+    descriptor.value = async function (...args: any[]) {
       console.log(
         `Context: ${contextName}; Method ${propertyKey} was called with arguments:`,
         args,
       );
-      const result = originalMethod.apply(this, args);
+      const result = await originalMethod.apply(this, args);
       console.log(
         `Context: ${contextName}; Method ${propertyKey} returned:`,
         result,

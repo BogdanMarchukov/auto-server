@@ -1,7 +1,17 @@
+import { Context, Next } from "koa";
 import Router from "koa-router";
+import Logger from "../common/decorators/logger.decorator";
 
-export const authController = new Router();
+class AuthController {
+  @Logger(AuthController.name)
+  async getHello(ctx: Context, next: Next) {
+    ctx.body = "Hollo auth1113331";
+  }
 
-authController.get("/auth", (ctx, next) => {
-  ctx.body = "Hello auth!";
-});
+  async singUp(ctx: Context, next: Next) {}
+}
+
+export const authRouter = new Router();
+const authController = new AuthController();
+
+authRouter.get("/auth", authController.getHello);
