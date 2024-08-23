@@ -1,16 +1,16 @@
 import { ConfigKeys, RootConfig } from "./types";
 
-class ConfigService {
+export class ConfigService {
   private static instance: ConfigService;
   private config: RootConfig;
 
   private constructor() {
     this.config = {
       [ConfigKeys.AUTH]: {
-        saltLength: parseInt(process.env.PASSWORD_SALT_LENGTH, 32),
-        hashLength: parseInt(process.env.PASSWORD_HASH_LENGTH, 32),
-        hashSecret: process.env.PASSWORD_SECRET || "secret",
-        iterations: parseInt(process.env.PASSWORD_HASH_ITERATIONS, 10),
+        saltLength: parseInt(process.env.AUTH_SALT_LENGTH) || 32,
+        hashLength: parseInt(process.env.AUTH_HASH_LENGTH) || 32,
+        iterations: parseInt(process.env.AUTH_ITE) || 10,
+        hashSecret: process.env.AUTH_SECRET || "secret",
         digest: "sha512",
       },
     };
