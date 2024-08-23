@@ -3,11 +3,11 @@ import { Db, MongoClient } from "mongodb";
 let db: Db;
 
 export async function connectMongo() {
-  const client = new MongoClient("mongodb://localhost:27017");
+  const client = new MongoClient("mongodb://admin:password@localhost:27017/admin");
   try {
     if (db === undefined) {
       await client.connect();
-      db = client.db("mydatabase");
+      db = client.db("admin");
       return db;
     } else {
       db;

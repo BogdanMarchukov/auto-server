@@ -2,16 +2,24 @@ import { pbkdf2 } from "crypto";
 import { ConfigKeys, RootConfig } from "../common/config/types";
 import Logger from "../common/decorators/logger.decorator";
 import { ConfigService } from "../common/config/config.service";
+import { UserRepository } from "../user/user.reposytory";
+import { Db } from "mongodb";
 
 export class AuthService {
   static AuthLogger = Logger(AuthService.name);
   private static instance: AuthService;
   private configService = ConfigService.getInstance();
+  private userRepository = UserRepository.getInstance();
 
   @AuthService.AuthLogger
-  async userSingUp(login: string, password: string) {
+  async userSingUp(login: string, password: string, db: Db) {
     const passwordHash = await this.getPasswordHash(password);
-    return passwordHash;
+    const result = await this.userRepository.createUser(
+      login,
+      passwordHash,
+      db,
+    );
+    return result;
   }
 
   @AuthService.AuthLogger

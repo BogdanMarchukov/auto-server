@@ -7,7 +7,7 @@ class AuthController {
   @Logger(AuthController.name)
   async getHello(ctx: Context, next: Next) {
     const authService = AuthService.getInstance();
-    const result = await authService.userSingUp("login", "password");
+    const result = await authService.userSingUp("login", "password", ctx.db);
     ctx.body = result;
   }
 
