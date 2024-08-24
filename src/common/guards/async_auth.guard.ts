@@ -2,7 +2,6 @@ import { Context } from "koa";
 import { UnauthorizedError } from "../errors/http.error";
 import { AuthService } from "../../auth/auth.service";
 import { UserRepository } from "../../user/user.reposytory";
-import { instanceToPlain } from "class-transformer";
 
 export function AsyncAuthGuard(
   target: any,
@@ -32,6 +31,7 @@ export function AsyncAuthGuard(
     if (!user) {
       throw new UnauthorizedError("authorization is required");
     }
+    // TODO: create params decorator for user
     const result = await originalMethod.apply(this, [...args, user]);
     return result;
   };
