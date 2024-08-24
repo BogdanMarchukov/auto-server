@@ -5,13 +5,12 @@ import { AuthService } from "./auth.service";
 import { CreateUserDto } from "./dto/createUser.dto";
 import { validateOrReject } from "class-validator";
 import { plainToInstance } from "class-transformer";
+import { BadRequestError } from "../common/errors/http.error";
 
 class AuthController {
   @Logger(AuthController.name)
   async getHello(ctx: Context, next: Next) {
-    const authService = AuthService.getInstance();
-    const result = await authService.userSingUp("login", "password", ctx.db);
-    ctx.body = result;
+    throw new BadRequestError("test error");
   }
 
   async singUp(ctx: Context, next: Next) {

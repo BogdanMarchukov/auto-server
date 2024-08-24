@@ -4,20 +4,27 @@ import { authRouter } from "./auth/auth.controller";
 import dotenv from "dotenv";
 import bodyParser from "koa-bodyparser";
 import { connectMongo } from "./common/database/mongo.connect";
+import { exceptionFilter } from "./common/errors/exception.filter";
+import { Db } from "mongodb";
 
 dotenv.config();
 
 const app = new Koa();
+let db: Db;
 
-app.use(async (cxt, next) => {
-  const db = await connectMongo();
-  cxt.db = db;
-  await next();
-});
+(async () => {
+  db = await connectMongo();
+})();
+
+app.use(async (ctx, next) => {
+  ctx.db = db;
+  await next()
+})
 
 app.use(bodyParser());
 
 const port = 3000;
+app.use(exceptionFilter);
 
 app.use(userRouter.routes());
 app.use(authRouter.routes());

@@ -4,6 +4,7 @@ import Logger from "../common/decorators/logger.decorator";
 import { ConfigService } from "../common/config/config.service";
 import { UserRepository } from "../user/user.reposytory";
 import { Db } from "mongodb";
+import { BadRequestError } from "../common/errors/http.error";
 
 export class AuthService {
   static AuthLogger = Logger(AuthService.name);
@@ -15,7 +16,7 @@ export class AuthService {
   async userSingUp(login: string, password: string, db: Db) {
     const existLogin = await this.checkExistUser(login, db);
     if (existLogin) {
-      throw new Error();
+      throw new BadRequestError(`Login ${login}, already exist`);
     }
     const passwordHash = await this.getPasswordHash(password);
     const result = await this.userRepository.createUser(
