@@ -13,6 +13,10 @@ export class AuthService {
 
   @AuthService.AuthLogger
   async userSingUp(login: string, password: string, db: Db) {
+    const existLogin = await this.checkExistUser(login, db);
+    if (existLogin) {
+      throw new Error();
+    }
     const passwordHash = await this.getPasswordHash(password);
     const result = await this.userRepository.createUser(
       login,
@@ -40,6 +44,12 @@ export class AuthService {
         },
       );
     });
+  }
+
+  @AuthService.AuthLogger
+  private async checkExistUser(username: string, db: Db) {
+    const user = await this.userRepository.findOne({ username }, db);
+    return user !== null;
   }
 
   public static getInstance(): AuthService {
