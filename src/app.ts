@@ -6,7 +6,7 @@ import bodyParser from "koa-bodyparser";
 import { connectMongo } from "./common/database/mongo.connect";
 import { exceptionFilter } from "./common/errors/exception.filter";
 import { Db } from "mongodb";
-import { autoRouter } from "./car/auto.controller";
+import { carRouter } from "./car/car.controller";
 
 dotenv.config();
 
@@ -29,7 +29,7 @@ app.use(exceptionFilter);
 
 app.use(userRouter.routes());
 app.use(authRouter.routes());
-app.use(autoRouter.routes());
+app.use(carRouter.routes());
 
 app.listen(port, () => {
   console.log(`start server: http://localhost: $ {port} /`);

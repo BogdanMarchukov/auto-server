@@ -1,22 +1,7 @@
-import { IsNumber, IsOptional, IsString } from "class-validator";
-import { ObjectId } from "mongodb";
+import { IsString } from "class-validator";
+import { CarBaseDocument } from "./base/car.base.document";
 
-export class CarDocument {
-  @IsOptional()
-  _id: string | ObjectId;
-
-  @IsString()
-  brand: string;
-
-  @IsString()
-  model: string;
-
-  @IsString()
-  productionYear: string;
-
-  @IsNumber()
-  price: number;
-
+export class CarDocument extends CarBaseDocument {
   @IsString()
   authorId: string;
 }
