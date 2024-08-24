@@ -4,14 +4,13 @@ import AsyncLogger from "../common/decorators/logger.decorator";
 import { AuthService } from "./auth.service";
 import { validateOrReject } from "class-validator";
 import { plainToInstance } from "class-transformer";
-import { BadRequestError } from "../common/errors/http.error";
 import { CreateUserDto } from "./dto/create_user.dto";
 import { SingInDto } from "./dto/sing_in.dto";
-import { AuthGuard } from "../common/guards/auth.guard";
+import { AsyncAuthGuard } from "../common/guards/async_auth.guard";
 
 class AuthController {
   @AsyncLogger(AuthController.name)
-  @AuthGuard
+  @AsyncAuthGuard
   async getHello(ctx: Context, next: Next) {
     ctx.status = 200;
     ctx.body = "hello";

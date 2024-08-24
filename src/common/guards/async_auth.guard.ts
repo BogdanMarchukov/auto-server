@@ -3,7 +3,7 @@ import { UnauthorizedError } from "../errors/http.error";
 import { AuthService } from "../../auth/auth.service";
 import { UserRepository } from "../../user/user.reposytory";
 
-export function AuthGuard(
+export function AsyncAuthGuard(
   target: any,
   propertyKey: string,
   descriptor: PropertyDescriptor,
