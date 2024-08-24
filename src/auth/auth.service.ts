@@ -4,13 +4,25 @@ import Logger from "../common/decorators/logger.decorator";
 import { ConfigService } from "../common/config/config.service";
 import { UserRepository } from "../user/user.reposytory";
 import { Db } from "mongodb";
-import { BadRequestError } from "../common/errors/http.error";
+import {
+  BadRequestError,
+  UnauthorizedError,
+} from "../common/errors/http.error";
+import { UserDocument } from "../user/user.document";
+import { sign } from "jsonwebtoken";
 
 export class AuthService {
   static AuthLogger = Logger(AuthService.name);
   private static instance: AuthService;
   private configService = ConfigService.getInstance();
   private userRepository = UserRepository.getInstance();
+
+  static getInstance(): AuthService {
+    if (!AuthService.instance) {
+      AuthService.instance = new AuthService();
+    }
+    return AuthService.instance;
+  }
 
   @AuthService.AuthLogger
   async userSingUp(login: string, password: string, db: Db) {
@@ -25,6 +37,23 @@ export class AuthService {
       db,
     );
     return result;
+  }
+
+  @AuthService.AuthLogger
+  async userSingIn(login: string, password: string, db: Db) {
+    try {
+      const user = await this.userRepository.findOne({ username: login }, db);
+      if (!user) {
+        throw new Error();
+      }
+      const isValidPassword = await this.checkUserPassword(user, password);
+      if (!isValidPassword) {
+        throw new Error();
+      }
+      return this.generateJwt(user._id.toString());
+    } catch (e) {
+      throw new UnauthorizedError("invalid login or password");
+    }
   }
 
   @AuthService.AuthLogger
@@ -48,15 +77,22 @@ export class AuthService {
   }
 
   @AuthService.AuthLogger
+  private generateJwt(userId: string) {
+    const config = this.configService.get<RootConfig[ConfigKeys.AUTH]>(
+      ConfigKeys.AUTH,
+    );
+    return sign({ userId }, config.jwtSecret, { expiresIn: "1h" });
+  }
+
+  @AuthService.AuthLogger
+  private async checkUserPassword(user: UserDocument, password: string) {
+    const hash = await this.getPasswordHash(password);
+    return hash === user.password;
+  }
+
+  @AuthService.AuthLogger
   private async checkExistUser(username: string, db: Db) {
     const user = await this.userRepository.findOne({ username }, db);
     return user !== null;
-  }
-
-  public static getInstance(): AuthService {
-    if (!AuthService.instance) {
-      AuthService.instance = new AuthService();
-    }
-    return AuthService.instance;
   }
 }

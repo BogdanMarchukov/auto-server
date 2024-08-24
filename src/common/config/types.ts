@@ -12,4 +12,5 @@ export interface UserPassword {
   hashSecret: string;
   iterations: number;
   digest: string;
+  jwtSecret: string;
 }

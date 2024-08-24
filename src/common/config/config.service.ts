@@ -12,6 +12,7 @@ export class ConfigService {
         iterations: parseInt(process.env.AUTH_ITE) || 10,
         hashSecret: process.env.AUTH_SECRET || "secret",
         digest: "sha512",
+        jwtSecret: process.env.AUTH_JWT_SECTET || 'jwt_secret'
       },
     };
   }

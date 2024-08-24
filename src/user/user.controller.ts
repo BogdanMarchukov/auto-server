@@ -1,6 +1,6 @@
 import Router from "koa-router";
 import Logger from "../common/decorators/logger.decorator";
-import UserEntity from "../common/decorators/userEntity.decorator";
+import UserEntity from "../common/decorators/user_entity.decorator";
 
 export const userRouter = new Router();
 
