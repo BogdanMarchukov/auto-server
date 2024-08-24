@@ -12,7 +12,7 @@ export class CarRepository {
   async createOneCar(data: CarDocument, db: Db) {
     const newCar = instanceToPlain(data);
     delete newCar._id;
-    const result = await db.collection(CarRepository.name).insertOne(newCar);
+    const result = await db.collection(CarRepository.collectionName).insertOne(newCar);
     const car = await this.findOnePk(result.insertedId, db);
     const carDocument = await this.validateResult(car);
     return carDocument;

@@ -6,15 +6,16 @@ import { plainToInstance } from "class-transformer";
 import { CreateCarDto } from "./dto/create_car.dto";
 import { validateOrReject } from "class-validator";
 import { CarService } from "./car.service";
+import { UserDocument } from "../user/user.document";
 
 class CarController {
   @AsyncLogger(CarController.name)
   @AsyncAuthGuard
-  async createOne(ctx: Context, next: Next) {
+  async createOne(ctx: Context, next: Next, user?: UserDocument) {
     const inputData = plainToInstance(CreateCarDto, ctx.request.body);
     await validateOrReject(inputData);
     const carService = CarService.getInstance();
-    const result = await carService.createOneCar(inputData, ctx.db);
+    const result = await carService.createOneCar(inputData, ctx.db, user!);
     ctx.status = 201;
     ctx.body = result;
   }

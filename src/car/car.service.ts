@@ -13,12 +13,10 @@ export class CarService {
   private carRepository = CarRepository.getInstance();
 
   @CarService.Logger
-  async createOneCar(inputData: CreateCarDto, ctx: Context) {
-    const user = ctx.state.user as UserDocument;
-    const db = ctx.db;
+  async createOneCar(inputData: CreateCarDto, db: Db, user: UserDocument) {
     const data = plainToInstance(CarDocument, {
       ...inputData,
-      authorId: user._id,
+      authorId: user._id.toString(),
     });
     return await this.carRepository.createOneCar(data, db);
   }

@@ -11,8 +11,8 @@ export class CarBaseDocument {
   @IsString()
   model: string;
 
-  @IsString()
-  productionYear: string;
+  @IsNumber()
+  productionYear: number;
 
   @IsNumber()
   price: number;
