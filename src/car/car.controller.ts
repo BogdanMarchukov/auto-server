@@ -3,15 +3,15 @@ import Router from "koa-router";
 import AsyncLogger from "../common/decorators/logger.decorator";
 import { AsyncAuthGuard } from "../common/guards/async_auth.guard";
 
-class AutoController {
-  @AsyncLogger(AutoController.name)
+class CarController {
+  @AsyncLogger(CarController.name)
   @AsyncAuthGuard
   async createOne(ctx: Context, next: Next) {
     ctx.status = 200;
     ctx.body = "hello";
   }
 
-  async getAuto(ctx: Context, next: Next) {
+  async getCar(ctx: Context, next: Next) {
     ctx.status = 200;
     ctx.body = "hello";
   }
@@ -26,10 +26,10 @@ class AutoController {
   }
 }
 
-const autoController = new AutoController();
-export const autoRouter = new Router();
+const carController = new CarController();
+export const carRouter = new Router();
 
-autoRouter.post("auto/create", autoController.createOne);
-autoRouter.get("auto/get", autoController.getAuto);
-autoRouter.delete("auto/delete", autoController.deleteOne);
-autoRouter.put("auto/update", autoController.updateOne);
+carRouter.post("car/create", carController.createOne);
+carRouter.get("car/get", carController.getCar);
+carRouter.delete("car/delete", carController.deleteOne);
+carRouter.put("car/update", carController.updateOne);

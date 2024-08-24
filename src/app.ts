@@ -6,7 +6,7 @@ import bodyParser from "koa-bodyparser";
 import { connectMongo } from "./common/database/mongo.connect";
 import { exceptionFilter } from "./common/errors/exception.filter";
 import { Db } from "mongodb";
-import { autoRouter } from "./auto/auto.controller";
+import { autoRouter } from "./car/auto.controller";
 
 dotenv.config();
 
