@@ -1,11 +1,11 @@
 import { Db, ObjectId, WithId } from "mongodb";
-import Logger from "../common/decorators/logger.decorator";
+import AsyncLogger from "../common/decorators/logger.decorator";
 import { UserDocument } from "./user.document";
 import { validateOrReject } from "class-validator";
 import { plainToInstance } from "class-transformer";
 
 export class UserRepository {
-  static Logger = Logger(UserRepository.name);
+  static Logger = AsyncLogger(UserRepository.name);
   static collectionName = "users";
   static instance: UserRepository;
 

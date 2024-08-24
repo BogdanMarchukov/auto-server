@@ -1,4 +1,4 @@
-export default function Logger(contextName: string) {
+export default function AsyncLogger(contextName: string) {
   return function (
     target: any,
     propertyKey: string,

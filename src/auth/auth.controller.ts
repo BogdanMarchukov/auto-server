@@ -1,17 +1,20 @@
 import { Context, Next } from "koa";
 import Router from "koa-router";
-import Logger from "../common/decorators/logger.decorator";
+import AsyncLogger from "../common/decorators/logger.decorator";
 import { AuthService } from "./auth.service";
 import { validateOrReject } from "class-validator";
 import { plainToInstance } from "class-transformer";
 import { BadRequestError } from "../common/errors/http.error";
 import { CreateUserDto } from "./dto/create_user.dto";
 import { SingInDto } from "./dto/sing_in.dto";
+import { AuthGuard } from "../common/guards/auth.guard";
 
 class AuthController {
-  @Logger(AuthController.name)
+  @AsyncLogger(AuthController.name)
+  @AuthGuard
   async getHello(ctx: Context, next: Next) {
-    throw new BadRequestError("test error");
+    ctx.status = 200;
+    ctx.body = "hello";
   }
 
   async singUp(ctx: Context, next: Next) {

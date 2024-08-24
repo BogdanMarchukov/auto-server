@@ -1,6 +1,6 @@
 import { pbkdf2 } from "crypto";
 import { ConfigKeys, RootConfig } from "../common/config/types";
-import Logger from "../common/decorators/logger.decorator";
+import AsyncLogger from "../common/decorators/logger.decorator";
 import { ConfigService } from "../common/config/config.service";
 import { UserRepository } from "../user/user.reposytory";
 import { Db } from "mongodb";
@@ -9,10 +9,11 @@ import {
   UnauthorizedError,
 } from "../common/errors/http.error";
 import { UserDocument } from "../user/user.document";
-import { sign } from "jsonwebtoken";
+import { sign, verify } from "jsonwebtoken";
+import { Context } from "koa";
 
 export class AuthService {
-  static AuthLogger = Logger(AuthService.name);
+  static AuthLogger = AsyncLogger(AuthService.name);
   private static instance: AuthService;
   private configService = ConfigService.getInstance();
   private userRepository = UserRepository.getInstance();
@@ -76,7 +77,31 @@ export class AuthService {
     });
   }
 
-  @AuthService.AuthLogger
+  // TODO: sync logger add
+  checkUserAuthByCtx(ctx: Context): string | null {
+    try {
+      const token = ctx?.request?.header?.authorization?.replace("Bearer", "");
+      if (token === undefined) {
+        return null;
+      }
+      const jwtPayload = this.verifyJwt(token);
+      if (typeof jwtPayload === "string" || !("userId" in jwtPayload)) {
+        return null;
+      }
+      return jwtPayload.userId;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  private verifyJwt(token: string) {
+    const config = this.configService.get<RootConfig[ConfigKeys.AUTH]>(
+      ConfigKeys.AUTH,
+    );
+    return verify(token, config.jwtSecret);
+  }
+
+  // TODO: sync logger add
   private generateJwt(userId: string) {
     const config = this.configService.get<RootConfig[ConfigKeys.AUTH]>(
       ConfigKeys.AUTH,

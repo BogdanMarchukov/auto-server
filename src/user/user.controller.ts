@@ -1,5 +1,5 @@
 import Router from "koa-router";
-import Logger from "../common/decorators/logger.decorator";
+import AsyncLogger from "../common/decorators/logger.decorator";
 import UserEntity from "../common/decorators/user_entity.decorator";
 
 export const userRouter = new Router();
@@ -13,7 +13,7 @@ userRouter.get("/user", (ctx, _) => {
 export class UserController {
   public bar = "bas";
 
-  @Logger(UserController.name)
+  @AsyncLogger(UserController.name)
   testDecorator(ctx: any, @UserEntity user?: any) {
     console.log("test decorator");
   }
