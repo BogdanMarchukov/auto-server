@@ -3,6 +3,7 @@ import { validateOrReject } from "class-validator";
 import { instanceToPlain, plainToInstance } from "class-transformer";
 import { CarDocument } from "./car.document";
 import { Db, ObjectId } from "mongodb";
+import { findManyFilter } from "./types/type";
 
 export class CarRepository {
   static collectionName = "cars";
@@ -12,7 +13,9 @@ export class CarRepository {
   async createOneCar(data: CarDocument, db: Db) {
     const newCar = instanceToPlain(data);
     delete newCar._id;
-    const result = await db.collection(CarRepository.collectionName).insertOne(newCar);
+    const result = await db
+      .collection(CarRepository.collectionName)
+      .insertOne(newCar);
     const car = await this.findOnePk(result.insertedId, db);
     const carDocument = await this.validateResult(car);
     return carDocument;
@@ -30,6 +33,17 @@ export class CarRepository {
       return null;
     }
     return await this.validateResult(result);
+  }
+
+  async fineMany(filter: findManyFilter, db: Db) {
+    filter = Object.fromEntries(
+      Object.entries(filter).filter(([_, v]) => v !== undefined),
+    ) as findManyFilter;
+    const result = await db
+      .collection(CarRepository.collectionName)
+      .find(filter)
+      .toArray();
+    return Promise.all(result.map((r) => this.validateResult(r)));
   }
 
   @CarRepository.Logger
