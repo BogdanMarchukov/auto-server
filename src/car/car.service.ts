@@ -6,7 +6,7 @@ import { UserDocument } from "../user/user.document";
 import { instanceToPlain, plainToInstance } from "class-transformer";
 import { CarDocument } from "./car.document";
 import { GetCarsDto } from "./dto/get_cars.dto";
-import { FindManyFilter } from "./types/type";
+import { FindManyFilter, SortBy } from "./types/type";
 import { UpdateCarDto } from "./dto/update_car.dto";
 import { NotFoundError } from "../common/errors/http.error";
 
@@ -48,8 +48,12 @@ export class CarService {
 
   @CarService.Logger
   async getCarsByQuery(input: GetCarsDto, db: Db) {
-    const filter = instanceToPlain(input) as FindManyFilter;
-    const result = await this.carRepository.fineMany(filter, db);
+    const filter = instanceToPlain(input) as GetCarsDto;
+    const sortBy = filter.sortBy;
+    const sort = filter.sort;
+    delete filter.sortBy;
+    delete filter.sort;
+    const result = await this.carRepository.fineMany(filter, db, sortBy, sort);
     return result;
   }
 

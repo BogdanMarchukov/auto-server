@@ -1,9 +1,11 @@
 import { Transform } from "class-transformer";
 import {
+    IsEnum,
   IsNumber,
   IsOptional,
   IsString,
 } from "class-validator";
+import { Sort, SortBy } from "../types/type";
 
 export class GetCarsDto {
   @IsString()
@@ -22,4 +24,12 @@ export class GetCarsDto {
   @IsOptional()
   @Transform(({ value }) => (value === undefined ? value : +value))
   price?: number;
+
+  @IsEnum(SortBy)
+  @IsOptional()
+  sortBy?: SortBy
+
+  @IsEnum(Sort)
+  @IsOptional()
+  sort?: Sort
 }

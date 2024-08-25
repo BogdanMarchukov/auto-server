@@ -3,7 +3,7 @@ import { validateOrReject } from "class-validator";
 import { instanceToPlain, plainToInstance } from "class-transformer";
 import { CarDocument } from "./car.document";
 import { Db, ObjectId } from "mongodb";
-import { FindManyFilter, UpdateInputData } from "./types/type";
+import { FindManyFilter, Sort, SortBy, UpdateInputData } from "./types/type";
 
 export class CarRepository {
   static collectionName = "cars";
@@ -43,11 +43,12 @@ export class CarRepository {
   }
 
   @CarRepository.Logger
-  async fineMany(filter: FindManyFilter, db: Db) {
+  async fineMany(filter: FindManyFilter, db: Db, sortBy = SortBy.PRICE, sort = Sort.DESC) {
     filter = this.filterProp<FindManyFilter>(filter);
     const result = await db
       .collection(CarRepository.collectionName)
       .find(filter)
+      .sort(sortBy, sort)
       .toArray();
     return Promise.all(result.map((r) => this.validateResult(r)));
   }
