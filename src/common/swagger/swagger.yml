@@ -1,0 +1,281 @@
+openapi: 3.0.1
+info:
+  title: Car Management API
+  description: API for managing authentication and cars.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000/api-docs
+    description: Local development server
+
+paths:
+  /auth/sign-in:
+    post:
+      summary: Sign in a user
+      description: Authenticate a user with login and password.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignInInput"
+      responses:
+        "200":
+          description: User authenticated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+
+  /auth/sign-up:
+    post:
+      summary: Sign up a new user
+      description: Register a new user with login and password.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignInInput"
+      responses:
+        "201":
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthSingUpResponse"
+        "400":
+          description: Invalid input data
+
+  /cars/create:
+    post:
+      summary: Create a new car
+      description: Add a new car to the system.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCarInput"
+      responses:
+        "201":
+          description: Car created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Car"
+
+  /cars/get/{brand}:
+    get:
+      summary: Get cars
+      description: Get a list of cars by brand.
+      parameters:
+        - in: path
+          name: brand
+          schema:
+            type: string
+          required: true
+          description: brend cars
+
+        - in: query
+          name: model
+          schema:
+            type: string
+            description: model cars
+        - in: query
+          name: productionYear
+          schema:
+            type: string
+            description: productionYear cars
+        - in: query
+          name: price
+          schema:
+            type: string
+            description: price cars
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+            enum: [brand, model, productionYear, price]
+            description: sort by props
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: [asc, descending]
+            description: sort by orders
+      responses:
+        "200":
+          description: A car object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Car"
+        "404":
+          description: Car not found
+
+  /car/update:
+    put:
+      summary: Update a car
+      description: Update the details of an existing car.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CarInput"
+      responses:
+        "200":
+          description: Car updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Car"
+        "404":
+          description: Car not found
+
+  /car/delete{carId}:
+    delete:
+      summary: Delete car
+      description: Dlet car by carId
+      parameters:
+        - in: path
+          name: carId
+          schema:
+            type: string
+          required: true
+          description: car id
+      responses:
+        "200":
+          description: Car updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeletCarResopnse"
+        "404":
+          description: Car not found
+
+components:
+  schemas:
+    SignInInput:
+      type: object
+      properties:
+        username:
+          type: string
+          description: User's login
+        password:
+          type: string
+          description: User's password
+      required:
+        - username
+        - password
+
+    AuthResponse:
+      type: object
+      properties:
+        jwt:
+          type: string
+          description: JWT token for authenticated access
+
+    AuthSingUpResponse:
+      type: object
+      properties:
+        schema:
+          $ref: "#/components/schemas/UserDocument"
+
+    UserDocument:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: userId in database
+        username:
+          type: string
+          description: User's login
+        password:
+          type: string
+          description: User's hash password
+      required:
+        - _id
+        - username
+        - password
+
+    DeletCarResopnse:
+      type: object
+      properties:
+        acknowledged:
+          type: boolean
+        modifiedCount:
+          type: integer
+        upsertedId:
+          type: string
+        upsertedCount:
+          type: integer
+        matchedCount:
+          type: integer
+
+    Car:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: carId in database
+        brand:
+          type: string
+          description: Brand car
+        model:
+          type: string
+          description: Model car
+        productionYear:
+          type: string
+          description: Year car
+        price:
+          type: string
+          description: Price car
+        authorId:
+          type: string
+          description: userId, created car
+
+    CarInput:
+      type: object
+      properties:
+        carId:
+          type: string
+          description: Id updated car
+        brand:
+          type: string
+          description: Brand car
+        model:
+          type: string
+          description: TModel car
+        productionYear:
+          type: string
+          description: Year car
+        price:
+          type: number
+          description: Price car
+      required:
+        - carId
+
+    CreateCarInput:
+      type: object
+      properties:
+        brand:
+          type: string
+          description: Brand car
+        model:
+          type: string
+          description: TModel car
+        productionYear:
+          type: string
+          description: Year car
+        price:
+          type: number
+          description: Price car
+      required:
+        - brand
+        - model
+        - productionYear
+        - price

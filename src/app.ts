@@ -7,6 +7,9 @@ import { connectMongo } from "./common/database/mongo.connect";
 import { exceptionFilter } from "./common/errors/exception.filter";
 import { Db } from "mongodb";
 import { carRouter } from "./car/car.controller";
+import { swaggerRouter } from "./common/swagger/swagger.controller";
+import { absolutePath } from "swagger-ui-dist";
+import koaStatic from "koa-static";
 
 dotenv.config();
 
@@ -25,8 +28,10 @@ app.use(async (ctx, next) => {
 app.use(bodyParser());
 
 const port = 3000;
-app.use(exceptionFilter);
 
+app.use(exceptionFilter);
+app.use(koaStatic(absolutePath()));
+app.use(swaggerRouter.routes()).use(swaggerRouter.allowedMethods());
 app.use(userRouter.routes());
 app.use(authRouter.routes());
 app.use(carRouter.routes());
