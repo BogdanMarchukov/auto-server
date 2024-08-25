@@ -1,13 +1,13 @@
 import { Transform } from "class-transformer";
-import {
-  IsNumber,
-  IsOptional,
-  IsString,
-} from "class-validator";
+import { IsNumber, IsOptional, IsString } from "class-validator";
 
-export class GetCarsDto {
+export class UpdateCarDto{
   @IsString()
-  brand: string;
+  carId: string;
+  
+  @IsString()
+  @IsOptional()
+  brand?: string;
 
   @IsString()
   @IsOptional()

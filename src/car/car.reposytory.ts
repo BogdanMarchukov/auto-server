@@ -3,7 +3,7 @@ import { validateOrReject } from "class-validator";
 import { instanceToPlain, plainToInstance } from "class-transformer";
 import { CarDocument } from "./car.document";
 import { Db, ObjectId } from "mongodb";
-import { findManyFilter } from "./types/type";
+import { FindManyFilter, UpdateInputData } from "./types/type";
 
 export class CarRepository {
   static collectionName = "cars";
@@ -35,15 +35,23 @@ export class CarRepository {
     return await this.validateResult(result);
   }
 
-  async fineMany(filter: findManyFilter, db: Db) {
-    filter = Object.fromEntries(
-      Object.entries(filter).filter(([_, v]) => v !== undefined),
-    ) as findManyFilter;
+  @CarRepository.Logger
+  async fineMany(filter: FindManyFilter, db: Db) {
+    filter = this.filterProp<FindManyFilter>(filter);
     const result = await db
       .collection(CarRepository.collectionName)
       .find(filter)
       .toArray();
     return Promise.all(result.map((r) => this.validateResult(r)));
+  }
+
+  @CarRepository.Logger
+  async updateByPk(carId: string, updateData: UpdateInputData, db: Db) {
+    updateData = this.filterProp(updateData);
+    const result = await db
+      .collection(CarRepository.collectionName)
+      .updateOne({ _id: new ObjectId(carId) }, { $set: updateData });
+    return result;
   }
 
   @CarRepository.Logger
@@ -54,6 +62,13 @@ export class CarRepository {
       whitelist: true,
     });
     return carDocument;
+  }
+
+  public filterProp<T>(obj: { [key: string]: any }) {
+    const result = Object.fromEntries(
+      Object.entries(obj).filter(([_, v]) => v !== undefined),
+    ) as T;
+    return result;
   }
 
   public static getInstance(): CarRepository {

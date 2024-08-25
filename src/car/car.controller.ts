@@ -8,6 +8,7 @@ import { validateOrReject } from "class-validator";
 import { CarService } from "./car.service";
 import { UserDocument } from "../user/user.document";
 import { GetCarsDto } from "./dto/get_cars.dto";
+import { UpdateCarDto } from "./dto/update_car.dto";
 
 class CarController {
   @AsyncLogger(CarController.name)
@@ -22,8 +23,8 @@ class CarController {
   }
 
   @AsyncLogger(CarController.name)
-  // @AsyncAuthGuard
-  async getCar(ctx: Context, next: Next, user?: UserDocument) {
+  @AsyncAuthGuard
+  async getCar(ctx: Context, next: Next) {
     const carService = CarService.getInstance();
     const filter = plainToInstance(GetCarsDto, ctx.query);
     await validateOrReject(filter);
@@ -32,9 +33,19 @@ class CarController {
     ctx.body = result;
   }
 
+  @AsyncLogger(CarController.name)
+  @AsyncAuthGuard
   async updateOne(ctx: Context, next: Next) {
+    const carService = CarService.getInstance();
+    const inputData = plainToInstance(UpdateCarDto, ctx.request.body);
+    await validateOrReject(inputData);
+    const result = await carService.updateByPk(
+      inputData.carId,
+      inputData,
+      ctx.db,
+    );
     ctx.status = 200;
-    ctx.body = "hello";
+    ctx.body = result;
   }
   async deleteOne(ctx: Context, next: Next) {
     ctx.status = 200;
