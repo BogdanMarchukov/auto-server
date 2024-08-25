@@ -25,7 +25,7 @@ class CarController {
 
   @AsyncLogger(CarController.name)
   @AsyncAuthGuard
-  async getCar(ctx: Context, next: Next) {
+  async getCars(ctx: Context, next: Next) {
     const carService = CarService.getInstance();
     const filter = plainToInstance(GetCarsDto, ctx.query);
     await validateOrReject(filter);
@@ -48,7 +48,9 @@ class CarController {
     ctx.status = 201;
     ctx.body = result;
   }
-  
+
+  @AsyncLogger(CarController.name)
+  @AsyncAuthGuard
   async deleteOne(ctx: Context, next: Next) {
     const carService = CarService.getInstance();
     const inputData = plainToInstance(DeleteCarDto, ctx.request.body);
@@ -63,6 +65,6 @@ const carController = new CarController();
 export const carRouter = new Router();
 
 carRouter.post("/car/create", carController.createOne);
-carRouter.get("/car/get", carController.getCar);
+carRouter.get("/car/get", carController.getCars);
 carRouter.delete("/car/delete", carController.deleteOne);
 carRouter.put("/car/update", carController.updateOne);
