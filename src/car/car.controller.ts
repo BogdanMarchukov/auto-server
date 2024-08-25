@@ -9,6 +9,7 @@ import { CarService } from "./car.service";
 import { UserDocument } from "../user/user.document";
 import { GetCarsDto } from "./dto/get_cars.dto";
 import { UpdateCarDto } from "./dto/update_car.dto";
+import { DeleteCarDto } from "./dto/delete_car.dto";
 
 class CarController {
   @AsyncLogger(CarController.name)
@@ -44,12 +45,17 @@ class CarController {
       inputData,
       ctx.db,
     );
-    ctx.status = 200;
+    ctx.status = 201;
     ctx.body = result;
   }
+  
   async deleteOne(ctx: Context, next: Next) {
-    ctx.status = 200;
-    ctx.body = "hello";
+    const carService = CarService.getInstance();
+    const inputData = plainToInstance(DeleteCarDto, ctx.request.body);
+    await validateOrReject(inputData);
+    const result = await carService.deleteOnePk(inputData.carId, ctx.db);
+    ctx.status = 201;
+    ctx.body = result;
   }
 }
 

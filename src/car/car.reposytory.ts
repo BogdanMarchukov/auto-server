@@ -35,6 +35,13 @@ export class CarRepository {
     return await this.validateResult(result);
   }
 
+  async deleteByPk(carId: string, db: Db) {
+    const result = await db
+      .collection(CarRepository.collectionName)
+      .deleteOne({ _id: new ObjectId(carId) });
+    return result;
+  }
+
   @CarRepository.Logger
   async fineMany(filter: FindManyFilter, db: Db) {
     filter = this.filterProp<FindManyFilter>(filter);

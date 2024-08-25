@@ -38,6 +38,15 @@ export class CarService {
   }
 
   @CarService.Logger
+  async deleteOnePk(carId: string, db: Db) {
+    const car = await this.carRepository.findOnePk(carId, db);
+    if (!car) {
+      throw new NotFoundError(`car not found, carId: ${carId}`);
+    }
+    return this.carRepository.deleteByPk(carId, db);
+  }
+
+  @CarService.Logger
   async getCarsByQuery(input: GetCarsDto, db: Db) {
     const filter = instanceToPlain(input) as FindManyFilter;
     const result = await this.carRepository.fineMany(filter, db);
