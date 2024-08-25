@@ -31,7 +31,7 @@ const port = 3000;
 
 app.use(exceptionFilter);
 app.use(koaStatic(absolutePath()));
-app.use(swaggerRouter.routes()).use(swaggerRouter.allowedMethods());
+app.use(swaggerRouter.routes());
 app.use(userRouter.routes());
 app.use(authRouter.routes());
 app.use(carRouter.routes());

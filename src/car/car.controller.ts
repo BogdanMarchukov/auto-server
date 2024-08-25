@@ -53,7 +53,7 @@ class CarController {
   @AsyncAuthGuard
   async deleteOne(ctx: Context, next: Next) {
     const carService = CarService.getInstance();
-    const inputData = plainToInstance(DeleteCarDto, ctx.request.body);
+    const inputData = plainToInstance(DeleteCarDto, ctx.request.query);
     await validateOrReject(inputData);
     const result = await carService.deleteOnePk(inputData.carId, ctx.db);
     ctx.status = 201;
