@@ -6,7 +6,6 @@ import { UserDocument } from "../user/user.document";
 import { instanceToPlain, plainToInstance } from "class-transformer";
 import { CarDocument } from "./car.document";
 import { GetCarsDto } from "./dto/get_cars.dto";
-import { FindManyFilter, SortBy } from "./types/type";
 import { UpdateCarDto } from "./dto/update_car.dto";
 import { NotFoundError } from "../common/errors/http.error";
 

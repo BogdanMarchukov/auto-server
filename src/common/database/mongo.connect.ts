@@ -2,8 +2,8 @@ import { Db, MongoClient } from "mongodb";
 
 let db: Db;
 
-export async function connectMongo() {
-  const client = new MongoClient("mongodb://admin:password@localhost:27017/admin");
+export async function connectMongo(port: number) {
+  const client = new MongoClient(`mongodb://admin:password@localhost:${port}/admin`);
   try {
     if (db === undefined) {
       await client.connect();

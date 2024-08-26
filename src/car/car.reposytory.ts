@@ -11,6 +11,7 @@ export class CarRepository {
   private static Logger = AsyncLogger(CarRepository.name);
 
   async createOneCar(data: CarDocument, db: Db) {
+    await this.validateResult(data);
     const newCar = instanceToPlain(data);
     delete newCar._id;
     const result = await db
@@ -43,7 +44,12 @@ export class CarRepository {
   }
 
   @CarRepository.Logger
-  async fineMany(filter: FindManyFilter, db: Db, sortBy = SortBy.PRICE, sort = Sort.DESC) {
+  async fineMany(
+    filter: FindManyFilter,
+    db: Db,
+    sortBy = SortBy.PRICE,
+    sort = Sort.DESC,
+  ) {
     filter = this.filterProp<FindManyFilter>(filter);
     const result = await db
       .collection(CarRepository.collectionName)
@@ -62,7 +68,6 @@ export class CarRepository {
     return result;
   }
 
-  @CarRepository.Logger
   private async validateResult(result: any): Promise<CarDocument> {
     const carDocument = plainToInstance(CarDocument, result);
     await validateOrReject(carDocument, {

@@ -17,7 +17,7 @@ const app = new Koa();
 let db: Db;
 
 (async () => {
-  db = await connectMongo();
+  db = await connectMongo(27017);
 })();
 
 app.use(async (ctx, next) => {
