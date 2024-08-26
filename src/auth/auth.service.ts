@@ -80,9 +80,9 @@ export class AuthService {
   // TODO: sync logger add
   checkUserAuthByCtx(ctx: Context): string | null {
     try {
-      const token = ctx?.request?.header?.authorization?.replace("Bearer", "");
+      const token = ctx?.request?.header?.authorization?.replace("Bearer ", "");
       if (token === undefined) {
-        return null;
+        return null 
       }
       const jwtPayload = this.verifyJwt(token);
       if (typeof jwtPayload === "string" || !("userId" in jwtPayload)) {
